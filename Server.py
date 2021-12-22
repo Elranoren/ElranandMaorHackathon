@@ -10,5 +10,5 @@ UDP_PORT = 13117
 magic_cookie = int(0xabcddcba)
 server_port = random.Random().randint(1024, 65535)
 message_type = int(0x2)
-message = struct.pack('IHB', magic_cookie, server_port,message_type)
+message = struct.pack('IHB', magic_cookie, server_port, message_type)
 cs.sendto(message, (UDP_IP, UDP_PORT))

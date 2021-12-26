@@ -10,15 +10,15 @@ class Client:
         self.team_name = team_name
 
     def looking_for_server(self):
-        self.udp_client_socket.bind((self.my_ip, 5400))
+        self.udp_client_socket.bind(('', 13117))
         while True:
             # try:
             print("Client started, listening for offer requests...")
             packed_message, address = self.udp_client_socket.recvfrom(4096)
-            magic_cookie, message_type, server_port = struct.unpack('IBH', packed_message)
+            magic_cookie, message_type, server_port = struct.unpack('>IBH', packed_message)
             if hex(int(magic_cookie)) != hex(2882395322) or int(message_type) != 2:
                 return  # TODO think what to to do
-            self.connected_to_server(address, server_port)
+            self.connected_to_server(address[0], server_port)
             # except Exception as e:
             #     print(e)
 

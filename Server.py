@@ -15,7 +15,7 @@ class Server:
         # self.server_port = random.Random().randint(1024, 65535)
         self.server_port = 5400
         message_type = int(0x2)
-        self.message = struct.pack('IBH', magic_cookie, message_type, self.server_port)  # TODO check why 8 byte instead of 7
+        self.message = struct.pack('>IBH', magic_cookie, message_type, self.server_port)  # TODO check why 8 byte instead of 7
         self.my_ip = "127.0.0.1" # TODO change to scapy.get_if_addr('eth1')
 
     def broadcast_message(self):

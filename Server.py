@@ -4,18 +4,19 @@ import time
 from socket import *
 import struct
 import scapy
+from scapy.arch import get_if_addr
 
 
 class Server:
 
     def __init__(self):
-        self.question_dict = {}
-        for i in range(10):
-            for j in range(10):
-                if i + j < 10:
-                    temp_question = f"How much is {i}+{j}?"
-                    if temp_question not in self.question_dict:
-                        self.question_dict[temp_question] = i + j
+        self.question_dict = {"How much is 1+1?":2, "How much is 1+2?":3, "How much is 1+3?":4, "How much is 1+5?":6, "How much is 2+3?":5}
+        # for i in range(10):
+        #     for j in range(10):
+        #         if i + j < 10:
+        #             temp_question = f"How much is {i}+{j}?"
+        #             if temp_question not in self.question_dict:
+        #                 self.question_dict[temp_question] = i + j
         self.udp_socket = socket(AF_INET, SOCK_DGRAM)
         self.tcp_socket = socket(AF_INET, SOCK_STREAM)
         self.udp_socket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
@@ -23,18 +24,18 @@ class Server:
         self.UDP_IP = '255.255.255.255'
         self.UDP_PORT = 13117
         magic_cookie = int(0xabcddcba)
-        # self.server_port = random.Random().randint(1024, 65535)
-        self.server_port = 5400
+        self.server_port = random.Random().randint(1024, 65535)
+        #self.server_port = 5400
         message_type = int(0x2)
         self.message = struct.pack('>IBH', magic_cookie, message_type,
-                                   self.server_port)  # TODO check why 8 byte instead of 7
-        self.my_ip = "127.0.0.1"  # TODO change to scapy.get_if_addr('eth1')
+                                   self.server_port)
+        self.my_ip =  get_if_addr("eth1")
         self.was_answered = False
         self.lock = threading.Lock()
         self.winning_team = ""
 
     def broadcast_message(self):
-        self.tcp_socket.bind((self.my_ip, self.server_port))  # TODO check if it is correct
+        self.tcp_socket.bind((self.my_ip, self.server_port))
         self.tcp_socket.settimeout(1)
         self.tcp_socket.listen(0)
         print("Server started, listening on IP address " + self.my_ip)

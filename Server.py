@@ -9,7 +9,7 @@ from scapy.arch import get_if_addr
 
 class Server:
 
-    def __init__(self):
+    def _init_(self):
         self.question_dict = {"How much is 1+1?":2, "How much is 1+2?":3, "How much is 1+3?":4, "How much is 1+5?":6, "How much is 2+3?":5}
         # for i in range(10):
         #     for j in range(10):
@@ -20,12 +20,13 @@ class Server:
         self.udp_socket = socket(AF_INET, SOCK_DGRAM)
         self.tcp_socket = socket(AF_INET, SOCK_STREAM)
         self.udp_socket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
+        self.tcp_socket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
         self.udp_socket.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
         self.UDP_IP = '255.255.255.255'
         self.UDP_PORT = 13117
         magic_cookie = int(0xabcddcba)
         self.server_port = random.Random().randint(1024, 65535)
-        #self.server_port = 5400
+        # self.server_port = 5400
         message_type = int(0x2)
         self.message = struct.pack('>IBH', magic_cookie, message_type,
                                    self.server_port)
@@ -33,11 +34,11 @@ class Server:
         self.was_answered = False
         self.lock = threading.Lock()
         self.winning_team = ""
+        self.tcp_socket.bind(('', self.server_port))
 
     def broadcast_message(self):
-        self.tcp_socket.bind((self.my_ip, self.server_port))
         self.tcp_socket.settimeout(1)
-        self.tcp_socket.listen(0)
+        self.tcp_socket.listen(2)
         print("Server started, listening on IP address " + self.my_ip)
         self.udp_socket.sendto(self.message, (self.UDP_IP, self.UDP_PORT))
         self.connection_players()
@@ -49,15 +50,16 @@ class Server:
                 # print("before")
                 # accept(1 sec)
                 client_socket, address = self.tcp_socket.accept()
+                # print("after")
                 team_name_bytes = client_socket.recv(1024)
                 team_name = team_name_bytes.decode()
                 new_client = (client_socket, address, team_name)
-                print(new_client)
+                # print(new_client)
                 connected_clients.append(new_client)
-                print("after")
+                # print("after2")
             except:
                 self.udp_socket.sendto(self.message, (self.UDP_IP, self.UDP_PORT))
-        print("out of while")
+        # print("out of while")
         self.start_game(connected_clients[:2])
 
     def start_game(self, connected_clients):
@@ -91,7 +93,7 @@ Please answer the following question as fast as you can:
             client_socket.sendall(summary_message_bytes)
             client_socket.close()
         print("Game over, sending out offer requests...")
-        self.connection_players()
+        self.broadcast_message()
 
     def handle_client(self, client_socket, address, my_team_name, welcome_message, answer,their_team_name):
         try:

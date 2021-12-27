@@ -26,15 +26,16 @@ class Client1:
                 print("Client started, listening for offer requests...")
                 packed_message, address = self.udp_client_socket.recvfrom(4096)
                 magic_cookie, message_type, server_port = struct.unpack('>IBH', packed_message)
-                if hex(int(magic_cookie)) != hex(2882395322) or int(message_type) != 2:
-                    return  # TODO think what to to do
+                if address[0]!='172.18.0.14' or hex(int(magic_cookie)) != hex(2882395322) or int(message_type) != 2:
+                    continue  # TODO think what to to do
                 self.connected_to_server(address[0], server_port)
             except Exception as e:
+                print(e)
                 pass
 
     def connected_to_server(self, address, server_port):
         print("Received offer from " + address + ", attempting to connect...")
-        self.tcp_socket.connect((address[0], server_port))
+        self.tcp_socket.connect((address, server_port))
         team_name_bytes = str.encode(self.team_name+"\n")
         self.tcp_socket.send(team_name_bytes)
         self.game_mode()
@@ -52,6 +53,7 @@ class Client1:
         server_result_bytes = self.tcp_socket.recv(1024)
         server_result = server_result_bytes.decode()
         print(server_result)
+        self.looking_for_server()
 
     def our_getch(self):
         import termios
@@ -100,4 +102,4 @@ class Client1:
 # client.looking_for_server()
 # client1.looking_for_server()
 # client2.looking_for_server()
-Client1("Snoku1").looking_for_server()
+Client1("Snoku").looking_for_server()

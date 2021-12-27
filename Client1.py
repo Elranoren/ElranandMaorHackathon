@@ -6,11 +6,11 @@ from multiprocessing import Process
 from socket import *
 from msvcrt import getch
 import keyword
+
 from pynput import keyboard
-from pynput.keyboard import Listener
 
 
-class Client:
+class Client1:
     def __init__(self, team_name):
         self.tcp_socket = socket(AF_INET, SOCK_STREAM)
         self.tcp_socket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
@@ -35,7 +35,7 @@ class Client:
     def connected_to_server(self, address, server_port):
         print("Received offer from " + address + ", attempting to connect...")
         self.tcp_socket.connect(("127.0.0.1", server_port))
-        team_name_bytes = str.encode(self.team_name + "\n")
+        team_name_bytes = str.encode(self.team_name+"\n")
         self.tcp_socket.send(team_name_bytes)
         self.game_mode()
 
@@ -69,14 +69,10 @@ class Client:
         return _getch()
 
     def on_press(key):
-        if key in ['0','1', '2', '3', '4', '5', '6', '7', '8', '9']:  # keys of interest
+        if key in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:  # keys of interest
             # self.keys.append(k)  # store it in global-like variable
             print('Key pressed: ' + key)
             return False  # stop listener; remove this if want more keys
-
-    # remove if main thread is polling self.keys
-
-
 # c1 = Client("Snoku")
 # c2 = Client("Snoku1")
 # p1 = Process(target=c1.looking_for_server).start()
@@ -104,4 +100,4 @@ class Client:
 # client.looking_for_server()
 # client1.looking_for_server()
 # client2.looking_for_server()
-Client("Snoku").looking_for_server()
+Client1("Snoku1").looking_for_server()

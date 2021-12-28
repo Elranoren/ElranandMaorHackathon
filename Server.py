@@ -9,7 +9,7 @@ from scapy.arch import get_if_addr
 
 class Server:
 
-    def _init_(self):
+    def __init__(self):
         self.question_dict = {"How much is 1+1?":2, "How much is 1+2?":3, "How much is 1+3?":4, "How much is 1+5?":6, "How much is 2+3?":5}
         # for i in range(10):
         #     for j in range(10):
@@ -81,8 +81,10 @@ Please answer the following question as fast as you can:
         connected_clients[1][0], connected_clients[1][1], connected_clients[1][2], welcome_message, answer,connected_clients[0][2]))
         thread1.start()
         thread2.start()
-        thread1.join()
-        thread2.join()
+        # thread1.join()
+        # thread2.join()
+        while thread1.is_alive() and thread2.is_alive():
+            time.sleep(0.1)
         # recive result from one of the clients and then:
         summary_message = f"""Game over!
         The correct answer was {answer}!
@@ -91,7 +93,7 @@ Please answer the following question as fast as you can:
         summary_message_bytes = str.encode(summary_message)
         for client_socket, address, team_name in connected_clients:
             client_socket.sendall(summary_message_bytes)
-            client_socket.close()
+            # client_socket.close()
         print("Game over, sending out offer requests...")
         self.broadcast_message()
 
@@ -111,7 +113,6 @@ Please answer the following question as fast as you can:
                 self.winning_team = my_team_name
             else:
                 self.winning_team = their_team_name
-
             self.lock.release()
         except timeout as e:
             self.winning_team = "Draw"

@@ -10,7 +10,7 @@ import getch
 # from pynput import keyboard
 
 
-class Client:
+class Client2:
     def __init__(self, team_name):
         self.tcp_socket = socket(AF_INET, SOCK_STREAM)
         self.tcp_socket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
@@ -27,10 +27,10 @@ class Client:
                 packed_message, address = self.udp_client_socket.recvfrom(4096)
                 magic_cookie, message_type, server_port = struct.unpack('>IBH', packed_message)
                 if address[0]!='172.18.0.146' or hex(int(magic_cookie)) != hex(2882395322) or int(message_type) != 2:
-                    continue  # TODO think what to to do address[0]!='172.18.0.146' or
+                    continue  # TODO think what to to do
                 self.connected_to_server(address[0], server_port)
             except Exception as e:
-                # print(e)
+                print(e)
                 pass
 
     def connected_to_server(self, address, server_port):
@@ -47,46 +47,34 @@ class Client:
         # client_answer = keyboard.Listener(on_press=self.on_press)
         # client_answer.start()  # start to listen on a separate thread
         # client_answer.join()
-        # client_answer = getch.getch()
-        # client_answer_bytes = str.encode(client_answer)
-        # self.tcp_socket.send(client_answer_bytes)
-        getch_thread = Process(target=self.getch_handler)
-        getch_thread.start()
-        server_result_bytes = self.tcp_socket.recv(1024)
-        getch_thread.kill()
-        server_result = server_result_bytes.decode()
-        print(server_result)
-        self.tcp_socket.close()
-        self.tcp_socket = socket(AF_INET, SOCK_STREAM)
-        self.tcp_socket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
-        self.looking_for_server()
-    
-    def getch_handler(self):
         client_answer = getch.getch()
         client_answer_bytes = str.encode(client_answer)
         self.tcp_socket.send(client_answer_bytes)
-        
+        server_result_bytes = self.tcp_socket.recv(1024)
+        server_result = server_result_bytes.decode()
+        print(server_result)
+        self.looking_for_server()
 
-    # def our_getch(self):
-    #     import termios
-    #     import sys, tty
-    #     def _getch():
-    #         fd = sys.stdin.fileno()
-    #         old_settings = termios.tcgetattr(fd)
-    #         try:
-    #             tty.setraw(fd)
-    #             ch = sys.stdin.read(1)
-    #         finally:
-    #             termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-    #         return ch
+    def our_getch(self):
+        import termios
+        import sys, tty
+        def _getch():
+            fd = sys.stdin.fileno()
+            old_settings = termios.tcgetattr(fd)
+            try:
+                tty.setraw(fd)
+                ch = sys.stdin.read(1)
+            finally:
+                termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+            return ch
 
-    #     return _getch()
+        return _getch()
 
-    # def on_press(key):
-    #     if key in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:  # keys of interest
-    #         # self.keys.append(k)  # store it in global-like variable
-    #         print('Key pressed: ' + key)
-    #         return False  # stop listener; remove this if want more keys
+    def on_press(key):
+        if key in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:  # keys of interest
+            # self.keys.append(k)  # store it in global-like variable
+            print('Key pressed: ' + key)
+            return False  # stop listener; remove this if want more keys
 # c1 = Client("Snoku")
 # c2 = Client("Snoku1")
 # p1 = Process(target=c1.looking_for_server).start()
@@ -95,8 +83,8 @@ class Client:
 # p1.join()
 # p2.join()
 # GOOD down!
-# c1 = Client1("Snoku")
-# c2 = Client1("Snoku1")
+# c1 = Client("Snoku")
+# c2 = Client("Snoku1")
 # c3 = Client("Snoku2")
 # p1 = threading.Thread(target=c1.looking_for_server)
 # p1.start()
@@ -114,4 +102,4 @@ class Client:
 # client.looking_for_server()
 # client1.looking_for_server()
 # client2.looking_for_server()
-Client("Snoku").looking_for_server()
+Client2("Snoku2").looking_for_server()

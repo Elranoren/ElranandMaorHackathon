@@ -27,7 +27,7 @@ class Server:
         self.udp_socket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
         self.tcp_socket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
         self.udp_socket.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
-        self.UDP_IP = '255.255.255.255'
+        self.UDP_IP = '172.99.255.255'
         self.UDP_PORT = 13117
         magic_cookie = int(0xabcddcba)
         self.server_port = random.Random().randint(1024, 65535)
@@ -39,7 +39,7 @@ class Server:
         self.was_answered = False
         self.lock = threading.Lock()
         self.winning_team = ""
-        self.tcp_socket.bind(('172.99.255.255', self.server_port))
+        self.tcp_socket.bind(('', self.server_port))
 
     def broadcast_message(self):
         """

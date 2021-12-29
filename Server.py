@@ -10,6 +10,9 @@ from scapy.arch import get_if_addr
 class Server:
 
     def __init__(self):
+        """
+        This is the constructor of the Server
+        """
         self.score_board = {}
         self.best_team = ""
         self.question_dict = {}
@@ -39,6 +42,9 @@ class Server:
         self.tcp_socket.bind(('', self.server_port))
 
     def broadcast_message(self):
+        """
+        This function is responsible to send udp broadcast to everyone and try to connect clients with the connection_players function
+        """
         self.tcp_socket.settimeout(1)
         self.tcp_socket.listen(2)
         print("Server started, listening on IP address " + self.my_ip)
@@ -46,6 +52,10 @@ class Server:
         self.connection_players()
 
     def connection_players(self):
+        """
+        This function is responsible to connect the clients to the server using TCP and when  there are 2 clients connected then
+        we go to game mode and start a game between the 2 clients and announce the winner.
+        """
         connected_clients = []
         while len(connected_clients) < 2:
             try:
@@ -72,6 +82,10 @@ class Server:
         self.start_game(connected_clients[:2])
 
     def start_game(self, connected_clients):
+        """
+        This function starts the game after 2 clients connected to the server and if after 10 seconds the server didnt got any response then
+        it sends a message for Draw otherwise it sends message with the winning team
+        """
         try:
             question_keys = list(self.question_dict.keys())
             index = random.randint(0, len(question_keys) - 1)
@@ -123,6 +137,9 @@ Please answer the following question as fast as you can:
             self.broadcast_message()
 
     def handle_client(self, client_socket, address, my_team_name, welcome_message, answer, their_team_name):
+        """
+        This function is used for open threads for each connected client and handling the game between this clients
+        """
         try:
             question_bytes = str.encode(welcome_message)
             client_socket.sendall(question_bytes)

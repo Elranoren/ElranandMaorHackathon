@@ -133,7 +133,7 @@ Please answer the following question as fast as you can:
             print("Game over, sending out offer requests...")
             self.broadcast_message()
         except Exception as e:
-            print(e)
+            # print(e)
             self.broadcast_message()
 
     def handle_client(self, client_socket, address, my_team_name, welcome_message, answer, their_team_name):

@@ -69,7 +69,7 @@ class Server:
                 #         ready_to_read, ready_to_write, in_error = select([connected_clients[0][0],], [connected_clients[0][0],], [], 2)
                 #     except:
                 #         connected_clients.pop(0)
-                print("after")
+                # print("after")
                 team_name_bytes = client_socket.recv(1024)
                 team_name = team_name_bytes.decode()
                 new_client = (client_socket, address, team_name)

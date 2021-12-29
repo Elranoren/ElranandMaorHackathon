@@ -22,6 +22,14 @@ class Server:
                     temp_question = f"How much is {i}+{j}?"
                     if temp_question not in self.question_dict:
                         self.question_dict[temp_question] = i + j
+                if i - j < 10 and i-j >= 0:
+                    temp_question = f"How much is {i}-{j}?"
+                    if temp_question not in self.question_dict:
+                        self.question_dict[temp_question] = i - j
+                if i * j < 10:
+                    temp_question = f"How much is {i}*{j}?"
+                    if temp_question not in self.question_dict:
+                        self.question_dict[temp_question] = i * j
         self.udp_socket = socket(AF_INET, SOCK_DGRAM)
         self.tcp_socket = socket(AF_INET, SOCK_STREAM)
         self.udp_socket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)

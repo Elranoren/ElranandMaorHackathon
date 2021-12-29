@@ -35,11 +35,11 @@ class Server:
         message_type = int(0x2)
         self.message = struct.pack('>IBH', magic_cookie, message_type,
                                    self.server_port)
-        self.my_ip = get_if_addr("eth1")
+        self.my_ip = get_if_addr("eth2")
         self.was_answered = False
         self.lock = threading.Lock()
         self.winning_team = ""
-        self.tcp_socket.bind(('', self.server_port))
+        self.tcp_socket.bind(('172.99.255.255', self.server_port))
 
     def broadcast_message(self):
         """

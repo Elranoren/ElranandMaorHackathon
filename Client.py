@@ -17,7 +17,7 @@ class Client:
         self.udp_client_socket = socket(AF_INET, SOCK_DGRAM)
         self.udp_client_socket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
         self.team_name = team_name
-        self.udp_client_socket.bind(('', 13117))
+        self.udp_client_socket.bind(('172.99.255.255', 13117))
 
     def looking_for_server(self):
         """
